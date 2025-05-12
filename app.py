@@ -221,6 +221,11 @@ def download_excel(platform):
             columns = ['views', 'channel_name', 'url']
             filename = 'youtube_tags1.xlsx'
             sheet_name = 'YouTube tags1'
+        elif platform == 'search-top-videos':
+            cursor.execute("SELECT  views, title, channel, url FROM youtube_top_videos")
+            columns = ['views', 'title','channel', 'url']
+            filename = 'search_by_title.xlsx'
+            sheet_name = 'YouTube title data'   
         elif platform == 'instagram':
             cursor.execute("SELECT page_name, followers, following, posts FROM instagram_stats")
             columns = ['Page Name', 'Followers', 'Following', 'Posts']
