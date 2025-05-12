@@ -397,6 +397,7 @@ def search_top_videos():
             try:
                 conn = get_db_connection()
                 cur = conn.cursor()
+                cur.execute("DELETE FROM youtube_top_videos WHERE keyword = %s", (keyword,))
                 for views, title, channel, url in videos:
                     cur.execute(
                         "INSERT INTO youtube_top_videos (views, title, channel, url, keyword, search_time) VALUES (%s, %s, %s, %s, %s, NOW())",
@@ -547,6 +548,10 @@ def keyword_views():
         try:
             conn = get_db_connection()
             cur = conn.cursor()
+            cur.execute(
+                "DELETE FROM keyword_views WHERE keyword = %s AND start_date = %s AND end_date = %s",
+                (keyword, start_date, end_date)
+            )
             for channel_name, views in sorted_views:
                 cur.execute(
                     "INSERT INTO keyword_views (keyword, channel_name, views, start_date, end_date, search_time) VALUES (%s, %s, %s, %s, %s, NOW())",
