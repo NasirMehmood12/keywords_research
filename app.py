@@ -225,7 +225,14 @@ def download_excel(platform):
             cursor.execute("SELECT  views, title, channel, url FROM youtube_top_videos")
             columns = ['views', 'title','channel', 'url']
             filename = 'search_by_title.xlsx'
-            sheet_name = 'YouTube title data'   
+            sheet_name = 'YouTube title data' 
+
+        elif platform == 'keyword_views':
+            cursor.execute("SELECT  keyword, channel_name, views, start_date, end_date, search_time FROM keyword_views")
+            columns = ['keyword', 'channel_name','views', 'start_date', 'end_date','search_time']
+            filename = 'search_by_channel.xlsx'
+            sheet_name = 'YouTube channel data' 
+            
         elif platform == 'instagram':
             cursor.execute("SELECT page_name, followers, following, posts FROM instagram_stats")
             columns = ['Page Name', 'Followers', 'Following', 'Posts']
@@ -535,6 +542,24 @@ def keyword_views():
 
         # Sort and render
         sorted_views = sorted(channel_views.items(), key=lambda x: x[1], reverse=True)
+
+        # Save keyword views to PostgreSQL
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            for channel_name, views in sorted_views:
+                cur.execute(
+                    "INSERT INTO keyword_views (keyword, channel_name, views, start_date, end_date, search_time) VALUES (%s, %s, %s, %s, %s, NOW())",
+                    (keyword, channel_name, views, start_date, end_date)
+                )
+            conn.commit()
+            cur.close()
+            conn.close()
+        except Exception as db_error:
+            print(f"Database error: {db_error}")
+
+
+        
         return render_template('keyword_views.html', channel_views=sorted_views, keyword=keyword, error=None)
 
     return render_template('keyword_views.html', channel_views=None, keyword='', error=None)
