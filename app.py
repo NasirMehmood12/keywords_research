@@ -15,7 +15,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # YouTube API
-API_KEY = 'AIzaSyCPS1YuR6s2zCnvPtAnDG2Mk-KQp5m91J0'
+API_KEY = 'AIzaSyBMl7RI4kQyeedDS12kjM-YekY3TtKydH4'
 youtube_key = build('youtube', 'v3', developerKey=API_KEY)
 
 # News channels dictionary
