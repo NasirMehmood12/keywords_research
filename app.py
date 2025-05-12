@@ -226,6 +226,7 @@ def download_excel(platform):
             columns = ['Page Name', 'Followers', 'Following', 'Posts']
             filename = 'instagram_stats.xlsx'
             sheet_name = 'Instagram Stats'
+            
         else:
             return "Invalid platform"
 
@@ -380,6 +381,22 @@ def search_top_videos():
 
             videos.sort(reverse=True)
 
+            # Send data to PostgreSQL
+            try:
+                conn = get_db_connection()
+                cur = conn.cursor()
+                for views, title, channel, url in videos:
+                    cur.execute(
+                        "INSERT INTO youtube_top_videos (views, title, channel, url, keyword, search_time) VALUES (%s, %s, %s, %s, %s, NOW())",
+                        (views.replace(',', ''), title, channel, url, keyword)
+                    )
+                conn.commit()
+                cur.close()
+                conn.close()
+            except Exception as db_error:
+                print(f"Database error: {db_error}")
+
+# ------------------
             return render_template('search_top_videos.html',
                                    videos=videos,
                                    keyword=keyword,
