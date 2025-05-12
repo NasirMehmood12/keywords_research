@@ -549,7 +549,7 @@ def keyword_views():
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute(
-                "DELETE FROM keyword_views WHERE keyword = %s AND start_date = %s AND end_date = %s",
+                "DELETE FROM keyword_views",
                 (keyword, start_date, end_date)
             )
             for channel_name, views in sorted_views:
